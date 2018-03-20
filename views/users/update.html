@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>仙哥的个人博客</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/css/sb-admin.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/css/plugins/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <%- include ../nav.html %>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                           用户首页
+                        </h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <form class="form-horizontal" action="/users/update" method="post">
+                                <input type="hidden" name="_id" value="<%= user._id%>"> 
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">用户名</label>
+                                    <div class="col-sm-10">
+                                      <input type="text" name="username" class="form-control" id="inputEmail3" value="<%= user.username%>">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword3" class="col-sm-2 control-label">年龄</label>
+                                    <div class="col-sm-10">
+                                      <input type="number" name="age" class="form-control" id="inputPassword3" value="<%= user.age%>">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">性别:</label>
+                                    <div class="col-sm-10">
+                                        <label class="radio-inline">
+                                        <input type="radio" name="sex" value="0" <%= user.sex == 0 ? 'checked' : ''%>> 男
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="sex" id="inlineRadio2" value="1" <%= user.sex == 1 ? 'checked' : ''%>> 女
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">爱好:</label>
+                                    <div class="col-sm-10">
+                                        <label class="checkbox-inline">
+                                        <input type="checkbox" name="likes" value="0" <%= user.likes.indexOf(0) != -1 ? 'checked' : ''%>> 吃
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="likes" value="1" <%= user.likes.indexOf(1) != -1 ? 'checked' : ''%>> 喝
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="likes" value="2" <%= user.likes.indexOf(2) != -1 ? 'checked' : ''%>> 玩
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="likes" value="3" <%= user.likes.indexOf(3) != -1 ? 'checked' : ''%>> 乐
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">籍贯:</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" name="position">
+                                            <option value="">--请选择--</option>
+                                            <option value="0" <%= user.position == 0 ? 'selected' : ''%>>北京市</option>
+                                            <option value="1" <%= user.position == 1 ? 'selected' : ''%>>河南省</option>
+                                            <option value="2" <%= user.position == 2 ? 'selected' : ''%>>河北省</option>
+                                            <option value="3" <%= user.position == 3 ? 'selected' : ''%>>山东省</option>
+                                            <option value="4" <%= user.position == 4 ? 'selected' : ''%>>山西省</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">个人简介:</label>
+                                    <div class="col-sm-10">
+                                          <textarea class="form-control" name="intro"><%= user.intro%></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                      <button type="submit" class="btn btn-default">提交</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- <form action="/users/update" method="post">
+                            <input type="hidden" name="_id" value="<%= user._id%>">
+                            用户名: <input type="text" name="username" value="<%= user.username%>"> <br><br>
+                            年龄: <input type="number" name="age" value="<%= user.age%>"> <br><br>
+                            性别:
+                                <input type="radio" name="sex" value="0" <%= user.sex == 0 ? 'checked' : ''%>>男
+                                <input type="radio" name="sex" value="1" <%= user.sex == 1 ? 'checked' : ''%>>女 <br><br>
+                            爱好:
+                                <input type="checkbox" name="likes" value="0" <%= user.likes.indexOf(0) != -1 ? 'checked' : ''%>>吃
+                                <input type="checkbox" name="likes" value="1" <%= user.likes.indexOf(1) != -1 ? 'checked' : ''%>>喝
+                                <input type="checkbox" name="likes" value="2" <%= user.likes.indexOf(2) != -1 ? 'checked' : ''%>>玩
+                                <input type="checkbox" name="likes" value="3" <%= user.likes.indexOf(3) != -1 ? 'checked' : ''%>>乐 <br><br>
+                            籍贯: 
+                                <select name="position">
+                                    <option value="">--请选择--</option>
+                                    <option value="0" <%= user.position == 0 ? 'selected' : ''%>>北京市</option>
+                                    <option value="1" <%= user.position == 1 ? 'selected' : ''%>>河南省</option>
+                                    <option value="2" <%= user.position == 2 ? 'selected' : ''%>>河北省</option>
+                                    <option value="3" <%= user.position == 3 ? 'selected' : ''%>>山东省</option>
+                                    <option value="4" <%= user.position == 4 ? 'selected' : ''%>>山西省</option>
+                                </select> <br><br>
+                            个人简介: 
+                                <textarea name="intro"><%= user.intro%></textarea> <br><br>
+                                <input type="submit" value="提交">
+                            </form>  -->                           
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery Version 1.11.0 -->
+    <script src="/js/jquery-1.11.0.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/js/bootstrap.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="/js/plugins/morris/raphael.min.js"></script>
+    <script src="/js/plugins/morris/morris.min.js"></script>
+    <script src="/js/plugins/morris/morris-data.js"></script>
+
+</body>
+
+</html>

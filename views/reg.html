@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>仙哥的个人博客</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .box {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        padding: 30px;
+        width: 500px;
+        height: 500px;
+        box-shadow: 0 0 10px #ddd;
+    }
+
+    .form-group {
+        margin-bottom: 40px;
+    }
+
+    .box h3 {
+        margin-top: 20px !important;
+        padding: 0 !important;
+        border: none;
+    }
+
+    .box .form-horizontal .form-group {
+        position: relative;
+    }
+
+    .box .form-horizontal .help-block {
+        position: absolute;
+        top: 37px;
+        left: 30px;
+        margin: 0;
+        color: #f00;
+    }
+
+    .box .form-horizontal .error {
+        display: none;
+        position: absolute;
+        top: 40px;
+        margin: 0;
+        color: #f00;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <form class="form-horizontal" action="/reg" method="post">
+            <h3 class="col-sm-offset-5 page-header">请注册</h3>
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">用户名:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="username" class="username form-control" name="username" placeholder="请输入用户名"> 
+                    <span class="glyphicon glyphicon-exclamation-sign admin error"></span>
+                    <span id="helpBlock" class="help-block col-sm-offset-2 user"></span>   
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">密码:</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password" class="password form-control" name="password" placeholder="请输入密码"> 
+                    <span class="glyphicon glyphicon-exclamation-sign word error"></span>
+                    <span id="helpBlock" class="help-block col-sm-offset-2 pass"></span>	
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phone" class="col-sm-2 control-label" style="text-align:center;text-indent:-11px;padding:0;margin-top:6px;">手机号码:</label>
+                <div class="col-sm-6">
+                    <input type="phone" id="phone" class="phone form-control" name="phone" placeholder="请输入手机号码"> 
+                    <span class="glyphicon glyphicon-exclamation-sign nokia error"></span>
+                    <span id="helpBlock" class="help-block col-sm-offset-2 mobile"></span>
+                </div>
+                <div class="col-sm-3">    
+                    <button class="send btn btn-default" type="button">点击发送</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="idcode" class="col-sm-2 control-label">验证码:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="idcode" class="idcode form-control" name="idcode" placeholder="请输入验证码"> 
+                    <span class="glyphicon glyphicon-exclamation-sign test error"></span>
+                    <span id="helpBlock" class="help-block col-sm-offset-2 code"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default col-sm-offset-2">注 册</button>
+            <a class="btn btn-default col-sm-offset-2" href="/">取 消</a>
+        </form>
+    </div>
+    <script src="/js/jquery-1.11.0.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+	<script>
+		$(function(){
+            var userBool = false;
+            var passBool = false;
+            var testBool = false;
+            var phoneBool = false;
+            var codeBool = false;
+
+            //验证码
+            $('.idcode').blur(function(){
+                var value = $(this).val().trim();
+                $.post('/idcode',{code:value},function(msg){
+                    if(msg.success == 1){
+                        $('.test').hide();
+                        $('.code').text('');
+                        codeBool = true;
+                    } else {
+                        $('.test').show();
+                        $('.code').text('验证码错误,请重新输入');
+                        codeBool = false;
+                        return;
+                    }
+                })
+            })
+
+            //用户名
+            $('.username').blur(function(){
+				var value = $(this).val().trim();
+				var reg = /^[\w\u4E00-\u9FA5]{2,20}$/;
+				if (!reg.test(value)){
+                    $('.admin').show();
+                    $('.user').text('用户名由2-20位中文、字母、数字、下划线组成');
+                    userBool = false;
+					return;
+				} else {
+                    $('.admin').hide();
+                    $('.user').text('');
+                    userBool = true;
+                }
+				$.post('/checkUsername',{username:value},function(msg){
+					if (msg.success == 1 ){
+                        console.log('该用户已经被注册');
+                        $('.admin').show();
+						$('.user').text('该用户已经被注册');
+                        testBool = false;
+					} else {
+						console.log('该用户名可用');
+                        $('.admin').hide();
+                        $('.user').text('');
+                        testBool = true;
+					}
+				})
+			})
+
+            //密码
+            $('.password').blur(function(){
+                var value = $(this).val();  
+                var reg = /^\w{6,20}$/;
+                if (!reg.test(value)) {
+                    $('.word').show();
+                    $('.pass').text('密码由6-20位字母、数字、下划线组成');
+                    passBool = false; 
+                    return;
+                } else {
+                    $('.word').hide();
+                    $('.pass').text('');
+                    passBool = true;
+                }
+            })
+
+            //发送验证码
+            $('.send').click(function() {
+                // 将手机号发发送给服务器
+                var value = $('.phone').val();
+                var reg = /^(13[0-9]|14[57]|15[012356789]|17[35678]|18[0-9])[0-9]{8}$/;
+                if(!reg.test(value)) {
+                    $('.nokia').show();
+                    $('.mobile').text('手机号码格式错误');
+                    phoneBool = false; 
+                } else {
+                    $('.nokia').hide();
+                    $('.mobile').text('');
+                    phoneBool = true; 
+                } 
+
+                // 将手机号码发送给服务器 
+                if(phoneBool) {    
+                    $.post('/send', { phone: value }, function(msg) {
+                        if (msg.success == 1) {
+                            alert('发送成功，请接收验证码，并输入');
+                        } else {
+                            alert('发送失败，请重新发送或者联系本网站管理员');
+                        }
+                    })
+                }
+            })
+
+            //表单提交
+            $('.form-horizontal').submit(function(){
+                if (codeBool & userBool && passBool && testBool){
+                } else {
+                    return false;
+                }
+            })
+		})
+	</script>
+</body>
+
+</html>
